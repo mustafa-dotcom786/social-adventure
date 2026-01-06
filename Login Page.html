@@ -1,0 +1,1631 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Social Adventures - Parent Portal</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;500;600;700;800&family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-blue: #4A90E2;
+            --primary-teal: #5CDB95;
+            --primary-lavender: #9575CD;
+            --primary-coral: #FF8A65;
+            --primary-cream: #FFF9F0;
+            --primary-dark: #2C3E50;
+            --background: #F8F9FF;
+            --card-bg: #FFFFFF;
+            --text-dark: #2D3748;
+            --text-light: #718096;
+            --border-radius: 20px;
+            --shadow-sm: 0 4px 12px rgba(0, 0, 0, 0.05);
+            --shadow-md: 0 8px 24px rgba(0, 0, 0, 0.08);
+            --shadow-lg: 0 15px 40px rgba(0, 0, 0, 0.12);
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        body {
+            font-family: 'Nunito', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .app-container {
+            width: 100%;
+            max-width: 360px;
+            height: 700px;
+            background-color: var(--background);
+            border-radius: 32px;
+            overflow: hidden;
+            position: relative;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }
+
+        .screen {
+            width: 100%;
+            height: 100%;
+            background-color: var(--background);
+            border-radius: 32px;
+            overflow: hidden;
+            position: relative;
+            display: none;
+        }
+
+        .screen.active {
+            display: block;
+        }
+
+        /* Status Bar */
+        .status-bar {
+            height: 30px;
+            background-color: transparent;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 20px;
+            font-size: 14px;
+            color: var(--text-dark);
+            position: relative;
+            z-index: 10;
+        }
+
+        .time {
+            font-weight: 600;
+        }
+
+        .status-icons {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .status-icons i {
+            font-size: 14px;
+        }
+
+        /* Header */
+        .header {
+            height: 70px;
+            background-color: var(--card-bg);
+            display: flex;
+            align-items: center;
+            padding: 0 20px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
+            position: relative;
+            z-index: 10;
+            margin-top: -30px;
+            padding-top: 30px;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .logo-icon {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, var(--primary-blue), var(--primary-teal));
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 20px;
+        }
+
+        .logo-text {
+            font-size: 20px;
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--primary-blue), var(--primary-teal));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .content {
+            height: calc(100% - 100px);
+            overflow-y: auto;
+            padding: 20px;
+            padding-bottom: 20px;
+        }
+
+        .content::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .content::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 10px;
+        }
+
+        .content::-webkit-scrollbar-thumb {
+            background: var(--primary-blue);
+            border-radius: 10px;
+        }
+
+        /* Welcome Section */
+        .welcome-section {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .app-icon {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, var(--primary-blue), var(--primary-teal));
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+            font-size: 36px;
+            color: white;
+        }
+
+        .app-title {
+            font-size: 24px;
+            font-weight: 800;
+            color: var(--primary-dark);
+            margin-bottom: 8px;
+        }
+
+        .app-tagline {
+            font-size: 14px;
+            color: var(--text-light);
+            line-height: 1.5;
+        }
+
+        /* Progress Indicator */
+        .progress-indicator {
+            display: flex;
+            justify-content: center;
+            margin: 20px 0 30px;
+            gap: 30px;
+        }
+
+        .progress-step {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .step-circle {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: #F1F5F9;
+            border: 2px solid #E2E8F0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            color: var(--text-light);
+            margin-bottom: 8px;
+            transition: var(--transition);
+            font-size: 14px;
+        }
+
+        .step-circle.active {
+            background: var(--primary-blue);
+            border-color: var(--primary-blue);
+            color: white;
+        }
+
+        .step-circle.completed {
+            background: var(--primary-teal);
+            border-color: var(--primary-teal);
+            color: white;
+        }
+
+        .step-text {
+            font-size: 12px;
+            color: var(--text-light);
+            font-weight: 600;
+        }
+
+        .step-text.active {
+            color: var(--primary-blue);
+        }
+
+        /* Forms */
+        .form-container {
+            display: none;
+        }
+
+        .form-container.active {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .panel-title {
+            font-size: 24px;
+            font-weight: 800;
+            color: var(--primary-dark);
+            margin-bottom: 10px;
+            text-align: center;
+        }
+
+        .panel-subtitle {
+            font-size: 14px;
+            color: var(--text-light);
+            margin-bottom: 25px;
+            line-height: 1.6;
+            text-align: center;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-label {
+            display: block;
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-dark);
+            margin-bottom: 8px;
+        }
+
+        .form-label .required {
+            color: var(--primary-coral);
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 16px;
+            border: 2px solid #E2E8F0;
+            border-radius: 12px;
+            font-size: 16px;
+            font-family: 'Nunito', sans-serif;
+            transition: var(--transition);
+            background: #F8FAFC;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: var(--primary-blue);
+            background: white;
+            box-shadow: 0 0 0 4px rgba(74, 144, 226, 0.1);
+        }
+
+        .form-input::placeholder {
+            color: #A0AEC0;
+        }
+
+        .btn {
+            width: 100%;
+            padding: 16px;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 700;
+            font-family: 'Nunito', sans-serif;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            margin: 10px 0;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary-blue) 0%, var(--primary-teal) 100%);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .btn-secondary {
+            background: #F1F5F9;
+            color: var(--text-dark);
+            border: 2px solid #E2E8F0;
+        }
+
+        .btn-secondary:hover {
+            background: #E2E8F0;
+        }
+
+        .btn-google {
+            background: white;
+            color: var(--text-dark);
+            border: 2px solid #E2E8F0;
+            margin-bottom: 15px;
+        }
+
+        .btn-google:hover {
+            background: #F8FAFC;
+        }
+
+        .divider {
+            display: flex;
+            align-items: center;
+            margin: 20px 0;
+            color: var(--text-light);
+        }
+
+        .divider::before, .divider::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: #E2E8F0;
+        }
+
+        .divider span {
+            padding: 0 15px;
+            font-size: 13px;
+        }
+
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin: 15px 0;
+        }
+
+        .checkbox-input {
+            width: 20px;
+            height: 20px;
+            border: 2px solid #E2E8F0;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: var(--transition);
+            position: relative;
+        }
+
+        .checkbox-input.checked {
+            background-color: var(--primary-teal);
+            border-color: var(--primary-teal);
+        }
+
+        .checkbox-label {
+            font-size: 13px;
+            color: var(--text-light);
+        }
+
+        .checkbox-label a {
+            color: var(--primary-blue);
+            text-decoration: none;
+        }
+
+        .checkbox-label a:hover {
+            text-decoration: underline;
+        }
+
+        .form-footer {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 14px;
+            color: var(--text-light);
+        }
+
+        .form-footer a {
+            color: var(--primary-blue);
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .form-footer a:hover {
+            text-decoration: underline;
+        }
+
+        /* Profile Creation */
+        .avatar-upload {
+            text-align: center;
+            margin: 20px 0;
+        }
+
+        .avatar-container {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #F1F5F9 0%, #E2E8F0 100%);
+            margin: 0 auto 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            border: 3px dashed #CBD5E0;
+            transition: var(--transition);
+            overflow: hidden;
+            position: relative;
+        }
+
+        .avatar-container:hover {
+            border-color: var(--primary-blue);
+        }
+
+        .avatar-container i {
+            font-size: 36px;
+            color: #A0AEC0;
+        }
+
+        .avatar-preview {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: none;
+        }
+
+        .avatar-text {
+            font-size: 13px;
+            color: var(--text-light);
+            margin-bottom: 20px;
+        }
+
+        .age-selectors {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin: 15px 0;
+        }
+
+        .age-option {
+            padding: 15px 10px;
+            border: 2px solid #E2E8F0;
+            border-radius: 12px;
+            text-align: center;
+            cursor: pointer;
+            transition: var(--transition);
+            background: #F8FAFC;
+        }
+
+        .age-option:hover {
+            border-color: var(--primary-blue);
+        }
+
+        .age-option.selected {
+            border-color: var(--primary-teal);
+            background: rgba(92, 219, 149, 0.1);
+        }
+
+        .age-number {
+            font-size: 18px;
+            font-weight: 800;
+            color: var(--primary-blue);
+            margin-bottom: 5px;
+        }
+
+        .age-label {
+            font-size: 11px;
+            color: var(--text-light);
+        }
+
+        .conditions-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            margin: 15px 0;
+        }
+
+        .condition-option {
+            padding: 15px;
+            border: 2px solid #E2E8F0;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: var(--transition);
+            background: #F8FAFC;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .condition-option:hover {
+            border-color: var(--primary-blue);
+        }
+
+        .condition-option.selected {
+            border-color: var(--primary-teal);
+            background: rgba(92, 219, 149, 0.1);
+        }
+
+        .condition-icon {
+            width: 36px;
+            height: 36px;
+            border-radius: 8px;
+            background: var(--primary-lavender);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 16px;
+            flex-shrink: 0;
+        }
+
+        .condition-text {
+            flex: 1;
+        }
+
+        .condition-name {
+            font-weight: 600;
+            color: var(--text-dark);
+            font-size: 13px;
+            margin-bottom: 2px;
+        }
+
+        .condition-desc {
+            font-size: 11px;
+            color: var(--text-light);
+        }
+
+        /* Navigation Buttons */
+        .nav-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .nav-buttons .btn {
+            flex: 1;
+            padding: 14px;
+        }
+
+        /* Validation Error */
+        .validation-error {
+            color: #E53E3E;
+            font-size: 12px;
+            margin-top: 5px;
+            display: none;
+        }
+
+        .validation-error.show {
+            display: block;
+        }
+
+        /* Preferences */
+        .preference-option {
+            background: white;
+            border-radius: 12px;
+            padding: 15px;
+            margin-bottom: 12px;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .preference-title {
+            font-size: 15px;
+            font-weight: 600;
+            color: var(--text-dark);
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .preference-title i {
+            color: var(--primary-blue);
+        }
+
+        .theme-selectors {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            margin: 12px 0;
+        }
+
+        .theme-option {
+            padding: 12px;
+            border: 2px solid #E2E8F0;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: var(--transition);
+            text-align: center;
+        }
+
+        .theme-option:hover {
+            border-color: var(--primary-blue);
+        }
+
+        .theme-option.selected {
+            border-color: var(--primary-teal);
+            background: rgba(92, 219, 149, 0.1);
+        }
+
+        .theme-color {
+            width: 36px;
+            height: 36px;
+            border-radius: 8px;
+            margin: 0 auto 8px;
+        }
+
+        .theme-name {
+            font-weight: 600;
+            color: var(--text-dark);
+            font-size: 13px;
+        }
+
+        .theme-desc {
+            font-size: 11px;
+            color: var(--text-light);
+            margin-top: 4px;
+        }
+
+        /* Success Screen */
+        .success-screen {
+            text-align: center;
+            padding: 30px 0;
+            display: none;
+        }
+
+        .success-screen.active {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .success-icon {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary-teal) 0%, var(--primary-blue) 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+            font-size: 32px;
+            color: white;
+            animation: successPulse 1.5s infinite;
+        }
+
+        @keyframes successPulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        .success-title {
+            font-size: 24px;
+            font-weight: 800;
+            color: var(--primary-dark);
+            margin-bottom: 10px;
+        }
+
+        .success-message {
+            font-size: 14px;
+            color: var(--text-light);
+            margin-bottom: 20px;
+            line-height: 1.5;
+        }
+
+        .child-avatar-large {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            margin: 0 auto 20px;
+            background: linear-gradient(135deg, #F1F5F9 0%, #E2E8F0 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 40px;
+            color: var(--primary-blue);
+            overflow: hidden;
+            border: 4px solid white;
+            box-shadow: var(--shadow-md);
+        }
+
+        .child-avatar-large img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .child-details {
+            background: #F8FAFC;
+            border-radius: 12px;
+            padding: 20px;
+            margin: 20px 0;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .detail-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid #E2E8F0;
+        }
+
+        .detail-row:last-child {
+            border-bottom: none;
+        }
+
+        .detail-label {
+            font-weight: 600;
+            color: var(--text-dark);
+            font-size: 13px;
+        }
+
+        .detail-value {
+            color: var(--text-light);
+            font-size: 13px;
+            text-align: right;
+        }
+
+        /* Fix for checkbox checkmark */
+        .checkbox-input.checked::after {
+            content: '✓';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: white;
+            font-size: 14px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <!-- Login Screen -->
+        <div class="screen active" id="loginScreen">
+            <div class="status-bar">
+                <div class="time">9:41</div>
+                <div class="status-icons">
+                    <i class="fas fa-signal"></i>
+                    <i class="fas fa-wifi"></i>
+                    <i class="fas fa-battery-three-quarters"></i>
+                </div>
+            </div>
+            <div class="header">
+                <div class="logo">
+                    <div class="logo-icon">
+                        <i class="fas fa-hands-helping"></i>
+                    </div>
+                    <div class="logo-text">Parent Portal</div>
+                </div>
+            </div>
+            <div class="content">
+                <div class="welcome-section">
+                    <div class="app-icon">
+                        <i class="fas fa-child"></i>
+                    </div>
+                    <div class="app-title">Social Adventures</div>
+                    <div class="app-tagline">A safe platform for children with special needs to practice social situations</div>
+                </div>
+
+                <div class="progress-indicator">
+                    <div class="progress-step">
+                        <div class="step-circle active">1</div>
+                        <div class="step-text active">Login</div>
+                    </div>
+                    <div class="progress-step">
+                        <div class="step-circle">2</div>
+                        <div class="step-text">Child Profile</div>
+                    </div>
+                    <div class="progress-step">
+                        <div class="step-circle">3</div>
+                        <div class="step-text">Preferences</div>
+                    </div>
+                </div>
+
+                <div class="form-container active" id="loginForm">
+                    <h2 class="panel-title">Welcome Back</h2>
+                    <p class="panel-subtitle">Sign in to access your child's profile and progress</p>
+
+                    <button class="btn btn-google" id="googleSignIn">
+                        <i class="fab fa-google"></i> Continue with Google
+                    </button>
+
+                    <div class="divider">
+                        <span>or continue with email</span>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Email Address <span class="required">*</span></label>
+                        <input type="email" class="form-input" id="parentEmail" placeholder="parent@example.com">
+                        <div class="validation-error" id="emailError">Please enter a valid email address</div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Password <span class="required">*</span></label>
+                        <input type="password" class="form-input" id="parentPassword" placeholder="••••••••">
+                        <div class="validation-error" id="passwordError">Password must be at least 8 characters</div>
+                    </div>
+
+                    <div class="checkbox-group">
+                        <div class="checkbox-input" id="rememberMeCheckbox"></div>
+                        <label class="checkbox-label" for="rememberMeCheckbox">Remember me on this device</label>
+                    </div>
+
+                    <button class="btn btn-primary" id="loginBtn">
+                        <i class="fas fa-lock"></i> Sign In
+                    </button>
+
+                    <div class="form-footer">
+                        New here? <a href="#" id="showSignUp">Create account</a>
+                    </div>
+                </div>
+
+                <!-- Signup Form (hidden by default) -->
+                <div class="form-container" id="signupForm">
+                    <h2 class="panel-title">Create Account</h2>
+                    <p class="panel-subtitle">Create a parent account to get started</p>
+
+                    <div class="form-group">
+                        <label class="form-label">Full Name <span class="required">*</span></label>
+                        <input type="text" class="form-input" id="parentName" placeholder="Your full name">
+                        <div class="validation-error" id="nameErrorSignup">Please enter your name</div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Email Address <span class="required">*</span></label>
+                        <input type="email" class="form-input" id="parentEmailSignup" placeholder="parent@example.com">
+                        <div class="validation-error" id="emailErrorSignup">Please enter a valid email</div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Create Password <span class="required">*</span></label>
+                        <input type="password" class="form-input" id="parentPasswordSignup" placeholder="Minimum 8 characters">
+                        <div class="validation-error" id="passwordErrorSignup">Password must be at least 8 characters</div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Confirm Password <span class="required">*</span></label>
+                        <input type="password" class="form-input" id="confirmPassword" placeholder="Re-enter your password">
+                        <div class="validation-error" id="confirmPasswordError">Passwords do not match</div>
+                    </div>
+
+                    <button class="btn btn-primary" id="signupBtn">
+                        <i class="fas fa-user-plus"></i> Create Account
+                    </button>
+
+                    <div class="form-footer">
+                        Already have an account? <a href="#" id="showLogin">Sign in</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Child Profile Screen -->
+        <div class="screen" id="profileScreen">
+            <div class="status-bar">
+                <div class="time">9:41</div>
+                <div class="status-icons">
+                    <i class="fas fa-signal"></i>
+                    <i class="fas fa-wifi"></i>
+                    <i class="fas fa-battery-three-quarters"></i>
+                </div>
+            </div>
+            <div class="header">
+                <div class="logo">
+                    <div class="logo-icon">
+                        <i class="fas fa-user-circle"></i>
+                    </div>
+                    <div class="logo-text">Child Profile</div>
+                </div>
+            </div>
+            <div class="content">
+                <div class="progress-indicator">
+                    <div class="progress-step">
+                        <div class="step-circle completed">1</div>
+                        <div class="step-text">Login</div>
+                    </div>
+                    <div class="progress-step">
+                        <div class="step-circle active">2</div>
+                        <div class="step-text active">Child Profile</div>
+                    </div>
+                    <div class="progress-step">
+                        <div class="step-circle">3</div>
+                        <div class="step-text">Preferences</div>
+                    </div>
+                </div>
+
+                <h2 class="panel-title">Create Profile</h2>
+                <p class="panel-subtitle">Set up your child's profile (one-time setup)</p>
+
+                <div class="avatar-upload">
+                    <div class="avatar-container" id="avatarContainer">
+                        <i class="fas fa-camera" id="avatarIcon"></i>
+                        <img src="" alt="Avatar Preview" class="avatar-preview" id="avatarPreview">
+                    </div>
+                    <div class="avatar-text">Tap to add photo (optional)</div>
+                    <input type="file" id="avatarInput" accept="image/*" style="display: none;">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Child's Name <span class="required">*</span></label>
+                    <input type="text" class="form-input" id="childName" placeholder="e.g., Alex">
+                    <div class="validation-error" id="nameError">Please enter your child's name</div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Age Group <span class="required">*</span></label>
+                    <div class="age-selectors">
+                        <div class="age-option" data-age="3">
+                            <div class="age-number">3-5</div>
+                            <div class="age-label">Preschool</div>
+                        </div>
+                        <div class="age-option" data-age="6">
+                            <div class="age-number">6-8</div>
+                            <div class="age-label">Early School</div>
+                        </div>
+                        <div class="age-option" data-age="9">
+                            <div class="age-number">9-12</div>
+                            <div class="age-label">Pre-Teen</div>
+                        </div>
+                    </div>
+                    <div class="validation-error" id="ageError">Please select an age range</div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Support Needs</label>
+                    <div class="conditions-grid">
+                        <div class="condition-option" data-condition="autism">
+                            <div class="condition-icon" style="background-color: var(--primary-lavender);">
+                                <i class="fas fa-puzzle-piece"></i>
+                            </div>
+                            <div class="condition-text">
+                                <div class="condition-name">Autism</div>
+                                <div class="condition-desc">Social communication</div>
+                            </div>
+                        </div>
+                        <div class="condition-option" data-condition="adhd">
+                            <div class="condition-icon" style="background-color: var(--primary-coral);">
+                                <i class="fas fa-bolt"></i>
+                            </div>
+                            <div class="condition-text">
+                                <div class="condition-name">ADHD</div>
+                                <div class="condition-desc">Focus & attention</div>
+                            </div>
+                        </div>
+                        <div class="condition-option" data-condition="anxiety">
+                            <div class="condition-icon" style="background-color: var(--primary-blue);">
+                                <i class="fas fa-heart"></i>
+                            </div>
+                            <div class="condition-text">
+                                <div class="condition-name">Anxiety</div>
+                                <div class="condition-desc">Anxiety reduction</div>
+                            </div>
+                        </div>
+                        <div class="condition-option" data-condition="speech">
+                            <div class="condition-icon" style="background-color: var(--primary-teal);">
+                                <i class="fas fa-comments"></i>
+                            </div>
+                            <div class="condition-text">
+                                <div class="condition-name">Speech</div>
+                                <div class="condition-desc">Communication</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Additional Notes</label>
+                    <textarea class="form-input" id="childNotes" rows="3" placeholder="Any specific interests or preferences..."></textarea>
+                </div>
+
+                <div class="nav-buttons">
+                    <button class="btn btn-secondary" id="backToLogin">
+                        <i class="fas fa-arrow-left"></i> Back
+                    </button>
+                    <button class="btn btn-primary" id="continueToPrefs">
+                        Continue <i class="fas fa-arrow-right"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Preferences Screen -->
+        <div class="screen" id="preferencesScreen">
+            <div class="status-bar">
+                <div class="time">9:41</div>
+                <div class="status-icons">
+                    <i class="fas fa-signal"></i>
+                    <i class="fas fa-wifi"></i>
+                    <i class="fas fa-battery-three-quarters"></i>
+                </div>
+            </div>
+            <div class="header">
+                <div class="logo">
+                    <div class="logo-icon">
+                        <i class="fas fa-cog"></i>
+                    </div>
+                    <div class="logo-text">Preferences</div>
+                </div>
+            </div>
+            <div class="content">
+                <div class="progress-indicator">
+                    <div class="progress-step">
+                        <div class="step-circle completed">1</div>
+                        <div class="step-text">Login</div>
+                    </div>
+                    <div class="progress-step">
+                        <div class="step-circle completed">2</div>
+                        <div class="step-text">Child Profile</div>
+                    </div>
+                    <div class="progress-step">
+                        <div class="step-circle active">3</div>
+                        <div class="step-text active">Preferences</div>
+                    </div>
+                </div>
+
+                <h2 class="panel-title">App Settings</h2>
+                <p class="panel-subtitle">Customize the app for your child's needs</p>
+
+                <div class="preference-option">
+                    <div class="preference-title">
+                        <i class="fas fa-sliders-h"></i> Difficulty Level
+                    </div>
+                    <div class="age-selectors">
+                        <div class="age-option" data-difficulty="easy">
+                            <div class="age-number"><i class="fas fa-smile"></i></div>
+                            <div class="age-label">Easy</div>
+                        </div>
+                        <div class="age-option selected" data-difficulty="medium">
+                            <div class="age-number"><i class="fas fa-meh"></i></div>
+                            <div class="age-label">Medium</div>
+                        </div>
+                        <div class="age-option" data-difficulty="advanced">
+                            <div class="age-number"><i class="fas fa-laugh"></i></div>
+                            <div class="age-label">Advanced</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="preference-option">
+                    <div class="preference-title">
+                        <i class="fas fa-palette"></i> Color Theme
+                    </div>
+                    <div class="theme-selectors">
+                        <div class="theme-option selected" data-theme="calm">
+                            <div class="theme-color" style="background: linear-gradient(135deg, var(--primary-blue), var(--primary-teal));"></div>
+                            <div class="theme-name">Calm</div>
+                            <div class="theme-desc">Blues & Greens</div>
+                        </div>
+                        <div class="theme-option" data-theme="warm">
+                            <div class="theme-color" style="background: linear-gradient(135deg, var(--primary-coral), #FFE98A);"></div>
+                            <div class="theme-name">Warm</div>
+                            <div class="theme-desc">Oranges & Yellows</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="preference-option">
+                    <div class="preference-title">
+                        <i class="fas fa-volume-up"></i> Sound Settings
+                    </div>
+                    <div class="checkbox-group">
+                        <div class="checkbox-input" id="enableSoundsCheckbox"></div>
+                        <label class="checkbox-label" for="enableSoundsCheckbox">Enable gentle sound feedback</label>
+                    </div>
+                    <div class="checkbox-group">
+                        <div class="checkbox-input" id="enableMusicCheckbox"></div>
+                        <label class="checkbox-label" for="enableMusicCheckbox">Enable background music</label>
+                    </div>
+                </div>
+
+                <div class="preference-option">
+                    <div class="preference-title">
+                        <i class="fas fa-chart-line"></i> Progress Tracking
+                    </div>
+                    <div class="checkbox-group">
+                        <div class="checkbox-input" id="trackProgressCheckbox"></div>
+                        <label class="checkbox-label" for="trackProgressCheckbox">Track progress automatically</label>
+                    </div>
+                    <div class="checkbox-group">
+                        <div class="checkbox-input" id="weeklyReportCheckbox"></div>
+                        <label class="checkbox-label" for="weeklyReportCheckbox">Send weekly progress reports</label>
+                    </div>
+                </div>
+
+                <div class="preference-option">
+                    <div class="checkbox-group">
+                        <div class="checkbox-input" id="termsAgreementCheckbox"></div>
+                        <label class="checkbox-label" for="termsAgreementCheckbox">
+                            I agree to the <a href="#">Terms</a> and <a href="#">Privacy Policy</a>
+                        </label>
+                    </div>
+                    <div class="validation-error" id="termsError">You must agree to the terms</div>
+                </div>
+
+                <div class="nav-buttons">
+                    <button class="btn btn-secondary" id="backToProfile">
+                        <i class="fas fa-arrow-left"></i> Back
+                    </button>
+                    <button class="btn btn-primary" id="completeSetup">
+                        <i class="fas fa-check-circle"></i> Complete
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Success Screen -->
+        <div class="screen" id="successScreen">
+            <div class="status-bar">
+                <div class="time">9:41</div>
+                <div class="status-icons">
+                    <i class="fas fa-signal"></i>
+                    <i class="fas fa-wifi"></i>
+                    <i class="fas fa-battery-three-quarters"></i>
+                </div>
+            </div>
+            <div class="header">
+                <div class="logo">
+                    <div class="logo-icon">
+                        <i class="fas fa-check-circle"></i>
+                    </div>
+                    <div class="logo-text">All Set!</div>
+                </div>
+            </div>
+            <div class="content">
+                <div class="success-screen">
+                    <div class="success-icon">
+                        <i class="fas fa-check"></i>
+                    </div>
+                    <h2 class="success-title">Profile Created!</h2>
+                    <p class="success-message">
+                        Your child's profile is ready. This setup only needs to be done once.
+                    </p>
+
+                    <div class="child-avatar-large" id="finalAvatar">
+                        <i class="fas fa-child" id="finalAvatarIcon"></i>
+                    </div>
+
+                    <div class="child-details">
+                        <div class="detail-row">
+                            <span class="detail-label">Child's Name:</span>
+                            <span class="detail-value" id="finalName">Alex</span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="detail-label">Age Group:</span>
+                            <span class="detail-value" id="finalAge">6-8 years</span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="detail-label">Support Needs:</span>
+                            <span class="detail-value" id="finalConditions">Autism, Speech</span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="detail-label">Difficulty:</span>
+                            <span class="detail-value" id="finalDifficulty">Medium</span>
+                        </div>
+                    </div>
+
+                    <a href="social-adventures-app.html" class="btn btn-primary" id="enterApp">
+                        <i class="fas fa-rocket"></i> Start Social Adventures
+                    </a>
+                    
+                    <div class="form-footer" style="margin-top: 20px;">
+                        Want to make changes? <a href="#" id="editProfile">Edit profile</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // State management
+        const childProfile = {
+            name: '',
+            age: null,
+            conditions: [],
+            avatar: null,
+            notes: '',
+            difficulty: 'medium',
+            theme: 'calm',
+            enableSounds: true,
+            enableMusic: false,
+            trackProgress: true,
+            weeklyReport: false
+        };
+
+        // DOM Elements
+        const screens = {
+            login: document.getElementById('loginScreen'),
+            profile: document.getElementById('profileScreen'),
+            preferences: document.getElementById('preferencesScreen'),
+            success: document.getElementById('successScreen')
+        };
+
+        const loginForm = document.getElementById('loginForm');
+        const signupForm = document.getElementById('signupForm');
+        const progressSteps = document.querySelectorAll('.progress-step');
+
+        // Show screen function
+        function showScreen(screenName) {
+            // Hide all screens
+            Object.values(screens).forEach(screen => {
+                screen.classList.remove('active');
+            });
+            
+            // Show target screen
+            screens[screenName].classList.add('active');
+            
+            // Update progress indicator
+            updateProgressIndicator(screenName);
+        }
+
+        // Update progress indicator
+        function updateProgressIndicator(currentScreen) {
+            const steps = {
+                'login': 1,
+                'profile': 2,
+                'preferences': 3,
+                'success': 4
+            };
+            
+            const currentStep = steps[currentScreen] || 1;
+            
+            progressSteps.forEach((step, index) => {
+                const circle = step.querySelector('.step-circle');
+                const text = step.querySelector('.step-text');
+                
+                if (index + 1 < currentStep) {
+                    circle.classList.remove('active');
+                    circle.classList.add('completed');
+                    text.classList.remove('active');
+                } else if (index + 1 === currentStep) {
+                    circle.classList.add('active');
+                    circle.classList.remove('completed');
+                    text.classList.add('active');
+                } else {
+                    circle.classList.remove('active', 'completed');
+                    text.classList.remove('active');
+                }
+            });
+        }
+
+        // Toggle between login and signup forms
+        document.getElementById('showSignUp').addEventListener('click', function(e) {
+            e.preventDefault();
+            loginForm.classList.remove('active');
+            signupForm.classList.add('active');
+        });
+
+        document.getElementById('showLogin').addEventListener('click', function(e) {
+            e.preventDefault();
+            signupForm.classList.remove('active');
+            loginForm.classList.add('active');
+        });
+
+        // Login Screen Functions
+        document.getElementById('googleSignIn').addEventListener('click', function() {
+            alert("Google Sign-In would be implemented here. For demo, proceeding to profile creation.");
+            showScreen('profile');
+        });
+
+        document.getElementById('loginBtn').addEventListener('click', function() {
+            const email = document.getElementById('parentEmail').value;
+            const password = document.getElementById('parentPassword').value;
+            const emailError = document.getElementById('emailError');
+            const passwordError = document.getElementById('passwordError');
+            
+            let valid = true;
+            
+            // Simple email validation
+            if (!email || !email.includes('@') || !email.includes('.')) {
+                emailError.classList.add('show');
+                valid = false;
+            } else {
+                emailError.classList.remove('show');
+            }
+            
+            // Simple password validation
+            if (!password || password.length < 8) {
+                passwordError.classList.add('show');
+                valid = false;
+            } else {
+                passwordError.classList.remove('show');
+            }
+            
+            if (valid) {
+                showScreen('profile');
+            }
+        });
+
+        // Sign Up Function
+        document.getElementById('signupBtn').addEventListener('click', function() {
+            const name = document.getElementById('parentName').value;
+            const email = document.getElementById('parentEmailSignup').value;
+            const password = document.getElementById('parentPasswordSignup').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+            
+            const nameError = document.getElementById('nameErrorSignup');
+            const emailError = document.getElementById('emailErrorSignup');
+            const passwordError = document.getElementById('passwordErrorSignup');
+            const confirmError = document.getElementById('confirmPasswordError');
+            
+            let valid = true;
+            
+            // Name validation
+            if (!name || name.trim().length < 2) {
+                nameError.classList.add('show');
+                valid = false;
+            } else {
+                nameError.classList.remove('show');
+            }
+            
+            // Email validation
+            if (!email || !email.includes('@') || !email.includes('.')) {
+                emailError.classList.add('show');
+                valid = false;
+            } else {
+                emailError.classList.remove('show');
+            }
+            
+            // Password validation
+            if (!password || password.length < 8) {
+                passwordError.classList.add('show');
+                valid = false;
+            } else {
+                passwordError.classList.remove('show');
+            }
+            
+            // Confirm password
+            if (password !== confirmPassword) {
+                confirmError.classList.add('show');
+                valid = false;
+            } else {
+                confirmError.classList.remove('show');
+            }
+            
+            if (valid) {
+                alert("Account created successfully! Proceeding to profile creation.");
+                showScreen('profile');
+            }
+        });
+
+        // Profile Screen Functions
+        // Avatar upload
+        const avatarContainer = document.getElementById('avatarContainer');
+        const avatarInput = document.getElementById('avatarInput');
+        const avatarPreview = document.getElementById('avatarPreview');
+        const avatarIcon = document.getElementById('avatarIcon');
+
+        avatarContainer.addEventListener('click', function() {
+            avatarInput.click();
+        });
+
+        avatarInput.addEventListener('change', function(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    avatarPreview.src = e.target.result;
+                    avatarPreview.style.display = 'block';
+                    avatarIcon.style.display = 'none';
+                    childProfile.avatar = e.target.result;
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+
+        // Age selection
+        const ageOptions = document.querySelectorAll('#profileScreen .age-option');
+        ageOptions.forEach(option => {
+            option.addEventListener('click', function() {
+                ageOptions.forEach(opt => opt.classList.remove('selected'));
+                this.classList.add('selected');
+                childProfile.age = this.getAttribute('data-age');
+            });
+        });
+
+        // Condition selection
+        const conditionOptions = document.querySelectorAll('#profileScreen .condition-option');
+        conditionOptions.forEach(option => {
+            option.addEventListener('click', function() {
+                const condition = this.getAttribute('data-condition');
+                if (this.classList.contains('selected')) {
+                    this.classList.remove('selected');
+                    childProfile.conditions = childProfile.conditions.filter(c => c !== condition);
+                } else {
+                    this.classList.add('selected');
+                    childProfile.conditions.push(condition);
+                }
+            });
+        });
+
+        // Navigation buttons
+        document.getElementById('backToLogin').addEventListener('click', function() {
+            showScreen('login');
+        });
+
+        document.getElementById('continueToPrefs').addEventListener('click', function() {
+            const name = document.getElementById('childName').value;
+            const nameError = document.getElementById('nameError');
+            const ageError = document.getElementById('ageError');
+            
+            let valid = true;
+            
+            if (!name || name.trim().length < 2) {
+                nameError.classList.add('show');
+                valid = false;
+            } else {
+                nameError.classList.remove('show');
+                childProfile.name = name.trim();
+            }
+            
+            if (!childProfile.age) {
+                ageError.classList.add('show');
+                valid = false;
+            } else {
+                ageError.classList.remove('show');
+            }
+            
+            if (valid) {
+                childProfile.notes = document.getElementById('childNotes').value;
+                showScreen('preferences');
+            }
+        });
+
+        // Preferences Screen Functions
+        // Difficulty selection
+        const difficultyOptions = document.querySelectorAll('#preferencesScreen .age-option');
+        difficultyOptions.forEach(option => {
+            option.addEventListener('click', function() {
+                difficultyOptions.forEach(opt => opt.classList.remove('selected'));
+                this.classList.add('selected');
+                childProfile.difficulty = this.getAttribute('data-difficulty');
+            });
+        });
+
+        // Theme selection
+        const themeOptions = document.querySelectorAll('#preferencesScreen .theme-option');
+        themeOptions.forEach(option => {
+            option.addEventListener('click', function() {
+                themeOptions.forEach(opt => opt.classList.remove('selected'));
+                this.classList.add('selected');
+                childProfile.theme = this.getAttribute('data-theme');
+            });
+        });
+
+        // Checkbox functionality
+        function setupCheckbox(checkboxId, propertyName, defaultValue) {
+            const checkbox = document.getElementById(checkboxId);
+            checkbox.addEventListener('click', function() {
+                this.classList.toggle('checked');
+                childProfile[propertyName] = this.classList.contains('checked');
+            });
+            
+            // Set initial state
+            childProfile[propertyName] = defaultValue;
+            if (defaultValue) {
+                checkbox.classList.add('checked');
+            }
+        }
+
+        // Initialize checkboxes
+        setupCheckbox('enableSoundsCheckbox', 'enableSounds', true);
+        setupCheckbox('enableMusicCheckbox', 'enableMusic', false);
+        setupCheckbox('trackProgressCheckbox', 'trackProgress', true);
+        setupCheckbox('weeklyReportCheckbox', 'weeklyReport', false);
+        setupCheckbox('termsAgreementCheckbox', 'termsAgreed', false);
+        
+        // Setup remember me checkbox
+        const rememberMeCheckbox = document.getElementById('rememberMeCheckbox');
+        rememberMeCheckbox.addEventListener('click', function() {
+            this.classList.toggle('checked');
+        });
+
+        // Navigation buttons
+        document.getElementById('backToProfile').addEventListener('click', function() {
+            showScreen('profile');
+        });
+
+        document.getElementById('completeSetup').addEventListener('click', function() {
+            const termsError = document.getElementById('termsError');
+            const termsAgreed = document.getElementById('termsAgreementCheckbox').classList.contains('checked');
+            
+            if (!termsAgreed) {
+                termsError.classList.add('show');
+                return;
+            }
+            
+            termsError.classList.remove('show');
+            
+            // Save to localStorage
+            localStorage.setItem('socialAdventuresProfile', JSON.stringify(childProfile));
+            localStorage.setItem('profileCreated', 'true');
+            
+            // Update success screen
+            updateSuccessScreen();
+            showScreen('success');
+        });
+
+        // Success Screen Functions
+        function updateSuccessScreen() {
+            // Update avatar
+            const finalAvatar = document.getElementById('finalAvatar');
+            const finalAvatarIcon = document.getElementById('finalAvatarIcon');
+            
+            if (childProfile.avatar) {
+                finalAvatar.innerHTML = `<img src="${childProfile.avatar}" alt="Child's Avatar">`;
+                finalAvatarIcon.style.display = 'none';
+            } else {
+                finalAvatarIcon.style.display = 'flex';
+            }
+            
+            // Update details
+            document.getElementById('finalName').textContent = childProfile.name || 'Not specified';
+            
+            let ageText = 'Not specified';
+            if (childProfile.age === '3') ageText = '3-5 years (Preschool)';
+            else if (childProfile.age === '6') ageText = '6-8 years (Early School)';
+            else if (childProfile.age === '9') ageText = '9-12 years (Pre-Teen)';
+            document.getElementById('finalAge').textContent = ageText;
+            
+            const conditionsText = childProfile.conditions.length > 0 
+                ? childProfile.conditions.map(c => c.charAt(0).toUpperCase() + c.slice(1)).join(', ')
+                : 'None specified';
+            document.getElementById('finalConditions').textContent = conditionsText;
+            
+            document.getElementById('finalDifficulty').textContent = 
+                childProfile.difficulty.charAt(0).toUpperCase() + childProfile.difficulty.slice(1);
+            
+            // Show success screen
+            document.querySelector('#successScreen .success-screen').classList.add('active');
+        }
+
+        // Update time in status bar
+        function updateTime() {
+            const now = new Date();
+            let hours = now.getHours();
+            let minutes = now.getMinutes();
+            minutes = minutes < 10 ? '0' + minutes : minutes;
+            hours = hours < 10 ? '0' + hours : hours;
+            
+            document.querySelectorAll('.time').forEach(timeElement => {
+                timeElement.textContent = `${hours}:${minutes}`;
+            });
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            updateTime();
+            setInterval(updateTime, 60000); // Update every minute
+            
+            // Check if profile already exists
+            const profileCreated = localStorage.getItem('profileCreated');
+            if (profileCreated === 'true') {
+                const formFooter = document.querySelector('#loginScreen .form-footer');
+                if (formFooter) {
+                    formFooter.innerHTML = 'Profile already created. <a href="social-adventures-app.html" id="enterAppFromLogin">Enter App</a>';
+                }
+            }
+            
+            // Set default conditions
+            childProfile.conditions = ['autism', 'speech'];
+            conditionOptions.forEach(option => {
+                if (childProfile.conditions.includes(option.getAttribute('data-condition'))) {
+                    option.classList.add('selected');
+                }
+            });
+            
+            // Set medium difficulty by default
+            difficultyOptions.forEach(option => {
+                if (option.getAttribute('data-difficulty') === 'medium') {
+                    option.classList.add('selected');
+                }
+            });
+            
+            // Set calm theme by default
+            themeOptions.forEach(option => {
+                if (option.getAttribute('data-theme') === 'calm') {
+                    option.classList.add('selected');
+                }
+            });
+        });
+
+        // Edit profile link
+        document.getElementById('editProfile').addEventListener('click', function(e) {
+            e.preventDefault();
+            showScreen('profile');
+        });
+    </script>
+</body>
+</html>

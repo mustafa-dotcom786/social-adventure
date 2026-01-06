@@ -1,0 +1,1936 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Social Adventures</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        :root {
+            --primary-blue: #5CA8E8;
+            --primary-green: #7DCC9A;
+            --primary-yellow: #FFD166;
+            --primary-orange: #FF9A5C;
+            --primary-pink: #FF8FA3;
+            --primary-purple: #B298DC;
+            --primary-teal: #4ECDC4;
+            --background: #F8FAFC;
+            --card-bg: #FFFFFF;
+            --text-dark: #1E293B;
+            --text-light: #64748B;
+            --border-radius: 24px;
+            --shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
+            --shadow-hover: 0 12px 28px rgba(0, 0, 0, 0.12);
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            --safe-bottom: env(safe-area-inset-bottom, 20px);
+        }
+
+        body {
+            font-family: 'Nunito', sans-serif;
+            background-color: var(--background);
+            color: var(--text-dark);
+            min-height: 100vh;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* App Container */
+        .app-container {
+            max-width: 480px;
+            margin: 0 auto;
+            min-height: 100vh;
+            background-color: var(--background);
+            position: relative;
+            box-shadow: 0 0 40px rgba(0, 0, 0, 0.05);
+        }
+
+        /* Screen Management */
+        .screen {
+            display: none;
+            min-height: 100vh;
+            padding-bottom: calc(80px + var(--safe-bottom));
+        }
+
+        .screen.active {
+            display: block;
+            animation: fadeIn 0.4s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        /* Header */
+        .header {
+            height: 70px;
+            background: var(--card-bg);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 24px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.04);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .logo-icon {
+            width: 44px;
+            height: 44px;
+            background: linear-gradient(135deg, var(--primary-blue), var(--primary-teal));
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 22px;
+        }
+
+        .logo-text {
+            font-size: 22px;
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--primary-blue), var(--primary-green));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        /* Content Area */
+        .content {
+            padding: 24px;
+            padding-bottom: calc(100px + var(--safe-bottom));
+            overflow-y: auto;
+            min-height: calc(100vh - 70px);
+        }
+
+        .content::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .content::-webkit-scrollbar-track {
+            background: rgba(92, 168, 232, 0.1);
+            border-radius: 10px;
+        }
+
+        .content::-webkit-scrollbar-thumb {
+            background: linear-gradient(to bottom, var(--primary-blue), var(--primary-green));
+            border-radius: 10px;
+        }
+
+        /* Welcome Screen */
+        .welcome-container {
+            min-height: calc(100vh - 70px);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 40px 24px;
+        }
+
+        .welcome-animation {
+            position: relative;
+            width: 220px;
+            height: 220px;
+            margin-bottom: 50px;
+        }
+
+        .welcome-circle {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary-blue), var(--primary-green));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 
+                0 15px 35px rgba(92, 168, 232, 0.25),
+                inset 0 5px 15px rgba(255, 255, 255, 0.3);
+            animation: float 3s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0) scale(1); }
+            50% { transform: translateY(-15px) scale(1.02); }
+        }
+
+        .welcome-circle i {
+            font-size: 100px;
+            color: white;
+            filter: drop-shadow(0 5px 10px rgba(0, 0, 0, 0.1));
+        }
+
+        .welcome-text {
+            margin-bottom: 50px;
+            max-width: 320px;
+        }
+
+        .welcome-text h1 {
+            font-size: 34px;
+            margin-bottom: 18px;
+            background: linear-gradient(135deg, var(--primary-blue), var(--primary-green));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            line-height: 1.2;
+        }
+
+        .welcome-text p {
+            font-size: 18px;
+            color: var(--text-light);
+            line-height: 1.5;
+        }
+
+        /* Buttons - Improved Placement */
+        .btn {
+            background: linear-gradient(135deg, var(--primary-blue), var(--primary-green));
+            color: white;
+            border: none;
+            border-radius: 50px;
+            padding: 20px 50px;
+            font-size: 20px;
+            font-weight: 700;
+            cursor: pointer;
+            box-shadow: 
+                0 10px 25px rgba(92, 168, 232, 0.3),
+                0 5px 10px rgba(0, 0, 0, 0.05);
+            transition: var(--transition);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            min-height: 64px;
+            min-width: 200px;
+            margin: 0 auto;
+        }
+
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 
+                0 15px 35px rgba(92, 168, 232, 0.4),
+                0 8px 15px rgba(0, 0, 0, 0.07);
+        }
+
+        .btn:active {
+            transform: translateY(-1px);
+        }
+
+        .btn-full {
+            width: 100%;
+            max-width: 320px;
+        }
+
+        .btn-small {
+            padding: 14px 28px;
+            font-size: 16px;
+            min-height: 50px;
+            min-width: 140px;
+        }
+
+        .btn-icon {
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Main Menu */
+        .menu-header {
+            margin-bottom: 32px;
+        }
+
+        .menu-title {
+            font-size: 28px;
+            font-weight: 800;
+            color: var(--text-dark);
+            margin-bottom: 8px;
+        }
+
+        .menu-subtitle {
+            font-size: 16px;
+            color: var(--text-light);
+        }
+
+        /* Scenario Grid */
+        .scenarios-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 18px;
+            margin-bottom: 40px;
+        }
+
+        .scenario-card {
+            background-color: var(--card-bg);
+            border-radius: 22px;
+            padding: 24px 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+            cursor: pointer;
+            border: 2px solid transparent;
+            position: relative;
+            min-height: 180px;
+        }
+
+        .scenario-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-hover);
+            border-color: rgba(92, 168, 232, 0.2);
+        }
+
+        .scenario-icon {
+            width: 70px;
+            height: 70px;
+            border-radius: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 16px;
+            font-size: 32px;
+            color: white;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .scenario-name {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--text-dark);
+            text-align: center;
+            margin-bottom: 8px;
+        }
+
+        .scenario-stats {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 14px;
+            color: var(--text-light);
+            margin-top: auto;
+        }
+
+        /* Daily Challenge */
+        .daily-challenge {
+            background: linear-gradient(135deg, var(--primary-blue), var(--primary-teal));
+            border-radius: 22px;
+            padding: 24px;
+            color: white;
+            margin-bottom: 32px;
+            box-shadow: var(--shadow);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .daily-challenge h3 {
+            font-size: 20px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .daily-challenge p {
+            font-size: 15px;
+            opacity: 0.9;
+            margin-bottom: 20px;
+        }
+
+        /* Achievements */
+        .achievements-section {
+            margin-top: 40px;
+        }
+
+        .section-title {
+            font-size: 22px;
+            font-weight: 800;
+            margin-bottom: 20px;
+            color: var(--text-dark);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .badges-container {
+            display: flex;
+            gap: 16px;
+            overflow-x: auto;
+            padding-bottom: 10px;
+            padding-right: 24px;
+        }
+
+        .badge {
+            flex-shrink: 0;
+            width: 100px;
+            height: 120px;
+            background-color: var(--card-bg);
+            border-radius: 18px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 18px 12px;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+            cursor: pointer;
+        }
+
+        .badge:hover {
+            transform: translateY(-3px);
+        }
+
+        /* Scenario Intro */
+        .scenario-intro-container {
+            min-height: calc(100vh - 70px);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 40px 24px;
+            text-align: center;
+        }
+
+        .scenario-image {
+            width: 240px;
+            height: 240px;
+            border-radius: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 40px;
+            box-shadow: 
+                0 20px 40px rgba(0, 0, 0, 0.12),
+                inset 0 5px 15px rgba(255, 255, 255, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .scenario-image i {
+            font-size: 110px;
+            color: white;
+        }
+
+        .scenario-intro-text {
+            font-size: 32px;
+            font-weight: 800;
+            margin-bottom: 24px;
+            color: var(--text-dark);
+            line-height: 1.2;
+        }
+
+        .intro-hint {
+            background: rgba(92, 168, 232, 0.1);
+            border-radius: 18px;
+            padding: 18px 24px;
+            margin-bottom: 40px;
+            max-width: 320px;
+            border-left: 4px solid var(--primary-blue);
+        }
+
+        /* Story Scene */
+        .scene-container {
+            min-height: calc(100vh - 70px);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .scene-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+            padding: 0 4px;
+        }
+
+        .progress-dots {
+            display: flex;
+            gap: 10px;
+        }
+
+        .progress-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background-color: #E2E8F0;
+            transition: var(--transition);
+        }
+
+        .progress-dot.active {
+            background-color: var(--primary-green);
+            transform: scale(1.3);
+        }
+
+        .scene-illustration {
+            flex: 1;
+            min-height: 300px;
+            border-radius: 24px;
+            margin-bottom: 28px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: var(--shadow);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .scene-character {
+            position: absolute;
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            background: var(--primary-yellow);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 36px;
+            color: white;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+            bottom: 24px;
+            left: 24px;
+        }
+
+        /* Choices Layout - IMPROVED */
+        .choices-container {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 18px;
+            margin-top: auto;
+            padding-bottom: 20px;
+        }
+
+        .choice-btn {
+            background-color: var(--card-bg);
+            border-radius: 20px;
+            padding: 24px 16px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            box-shadow: var(--shadow);
+            cursor: pointer;
+            transition: var(--transition);
+            border: 3px solid transparent;
+            min-height: 140px;
+            text-align: center;
+        }
+
+        .choice-btn:hover {
+            transform: translateY(-4px);
+            border-color: var(--primary-blue);
+            box-shadow: var(--shadow-hover);
+        }
+
+        .choice-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 16px;
+            font-size: 28px;
+            color: white;
+        }
+
+        .choice-text {
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--text-dark);
+            line-height: 1.3;
+        }
+
+        /* Feedback Screen */
+        .feedback-container {
+            min-height: calc(100vh - 70px);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 40px 24px;
+            text-align: center;
+        }
+
+        .feedback-animation {
+            width: 180px;
+            height: 180px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary-yellow), var(--primary-orange));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 40px;
+            box-shadow: 
+                0 20px 40px rgba(255, 209, 102, 0.25),
+                inset 0 5px 15px rgba(255, 255, 255, 0.3);
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        .feedback-text {
+            font-size: 32px;
+            font-weight: 800;
+            margin-bottom: 16px;
+            color: var(--text-dark);
+        }
+
+        .feedback-subtext {
+            font-size: 18px;
+            color: var(--text-light);
+            margin-bottom: 40px;
+            max-width: 280px;
+            line-height: 1.4;
+        }
+
+        /* Progress Screen */
+        .progress-container {
+            min-height: calc(100vh - 150px);
+        }
+
+        .progress-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 32px;
+        }
+
+        .progress-title {
+            font-size: 26px;
+            font-weight: 800;
+            color: var(--text-dark);
+        }
+
+        .total-stars {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--text-dark);
+            background: rgba(255, 209, 102, 0.15);
+            padding: 10px 20px;
+            border-radius: 50px;
+        }
+
+        .progress-scenarios {
+            display: flex;
+            flex-direction: column;
+            gap: 18px;
+        }
+
+        .progress-item {
+            background-color: var(--card-bg);
+            border-radius: 20px;
+            padding: 24px;
+            display: flex;
+            align-items: center;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+        }
+
+        .progress-item:hover {
+            transform: translateY(-3px);
+        }
+
+        /* Rewards Screen */
+        .rewards-container {
+            min-height: calc(100vh - 70px);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 40px 24px;
+            text-align: center;
+        }
+
+        .reward-unlocked {
+            width: 220px;
+            height: 220px;
+            border-radius: 30px;
+            background: linear-gradient(135deg, var(--primary-pink), var(--primary-orange));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 40px;
+            box-shadow: 
+                0 25px 50px rgba(255, 143, 163, 0.25),
+                inset 0 8px 20px rgba(255, 255, 255, 0.3);
+            animation: rewardGlow 2s infinite alternate;
+        }
+
+        @keyframes rewardGlow {
+            0% { box-shadow: 0 25px 50px rgba(255, 143, 163, 0.25); }
+            100% { box-shadow: 0 25px 50px rgba(255, 143, 163, 0.4); }
+        }
+
+        .rewards-text {
+            font-size: 34px;
+            font-weight: 800;
+            margin-bottom: 12px;
+            color: var(--text-dark);
+        }
+
+        /* Customization Screen */
+        .customization-container {
+            min-height: calc(100vh - 150px);
+        }
+
+        .customization-title {
+            font-size: 26px;
+            font-weight: 800;
+            margin-bottom: 32px;
+            color: var(--text-dark);
+        }
+
+        .customization-options {
+            display: flex;
+            flex-direction: column;
+            gap: 28px;
+        }
+
+        .customization-option {
+            background-color: var(--card-bg);
+            border-radius: 20px;
+            padding: 28px;
+            box-shadow: var(--shadow);
+        }
+
+        /* Bottom Navigation - IMPROVED */
+        .bottom-nav {
+            position: fixed;
+            bottom: var(--safe-bottom);
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100%;
+            max-width: 480px;
+            height: 80px;
+            background: linear-gradient(to top, var(--card-bg), rgba(255, 255, 255, 0.95));
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            padding: 0 24px;
+            box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.08);
+            z-index: 1000;
+            backdrop-filter: blur(10px);
+        }
+
+        .nav-btn {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            cursor: pointer;
+            transition: var(--transition);
+            padding: 12px 16px;
+            border-radius: 16px;
+            flex: 1;
+            text-align: center;
+            min-width: 70px;
+        }
+
+        .nav-btn.active {
+            background: rgba(92, 168, 232, 0.12);
+        }
+
+        .nav-icon {
+            font-size: 22px;
+            color: var(--text-light);
+            transition: var(--transition);
+        }
+
+        .nav-btn.active .nav-icon {
+            color: var(--primary-blue);
+            transform: scale(1.1);
+        }
+
+        .nav-text {
+            font-size: 12px;
+            font-weight: 700;
+            color: var(--text-light);
+        }
+
+        .nav-btn.active .nav-text {
+            color: var(--primary-blue);
+        }
+
+        /* Screen Navigation Buttons */
+        .screen-nav {
+            position: fixed;
+            bottom: calc(90px + var(--safe-bottom));
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100%;
+            max-width: 480px;
+            padding: 0 24px;
+            display: flex;
+            justify-content: space-between;
+            z-index: 999;
+        }
+
+        .nav-action-btn {
+            background-color: var(--card-bg);
+            border: none;
+            border-radius: 50px;
+            width: 56px;
+            height: 56px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 
+                0 8px 20px rgba(0, 0, 0, 0.1),
+                0 4px 8px rgba(0, 0, 0, 0.04);
+            transition: var(--transition);
+            font-size: 20px;
+            color: var(--text-dark);
+        }
+
+        .nav-action-btn:hover {
+            transform: translateY(-3px);
+            background: linear-gradient(135deg, var(--primary-blue), var(--primary-green));
+            color: white;
+        }
+
+        /* Action Buttons Container */
+        .action-buttons {
+            display: flex;
+            gap: 16px;
+            margin-top: 32px;
+            justify-content: center;
+            width: 100%;
+            flex-wrap: wrap;
+        }
+
+        /* Centered Container for Buttons */
+        .centered-buttons {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+            width: 100%;
+            margin-top: 32px;
+        }
+
+        /* Improved Button Groups */
+        .button-group {
+            display: flex;
+            gap: 16px;
+            width: 100%;
+            max-width: 320px;
+            justify-content: center;
+        }
+
+        .button-group .btn {
+            margin: 0;
+            flex: 1;
+        }
+
+        /* Notification */
+        .notification {
+            position: fixed;
+            top: 90px;
+            left: 50%;
+            transform: translateX(-50%) translateY(-20px);
+            background: linear-gradient(135deg, var(--primary-blue), var(--primary-green));
+            color: white;
+            padding: 16px 28px;
+            border-radius: 50px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            z-index: 2000;
+            font-weight: 700;
+            opacity: 0;
+            transition: all 0.3s ease;
+            max-width: 85%;
+            text-align: center;
+            backdrop-filter: blur(10px);
+        }
+
+        /* Avatar Modal */
+        .avatar-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 3000;
+            padding: 24px;
+            backdrop-filter: blur(5px);
+        }
+
+        .avatar-modal-content {
+            background: var(--card-bg);
+            border-radius: 28px;
+            padding: 32px;
+            width: 100%;
+            max-width: 400px;
+            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.3);
+        }
+
+        /* Responsive Adjustments */
+        @media (max-width: 400px) {
+            .content {
+                padding: 20px;
+            }
+            
+            .scenarios-grid {
+                grid-template-columns: 1fr;
+                gap: 16px;
+            }
+            
+            .choices-container {
+                grid-template-columns: 1fr;
+                gap: 16px;
+            }
+            
+            .choice-btn {
+                min-height: 120px;
+                padding: 20px 16px;
+            }
+            
+            .btn {
+                padding: 18px 40px;
+                font-size: 18px;
+                min-width: 180px;
+            }
+            
+            .scenario-card {
+                min-height: 160px;
+                padding: 20px 16px;
+            }
+        }
+
+        @media (min-width: 481px) {
+            body {
+                background: linear-gradient(135deg, #f0f4f8, #d9e2ec);
+                padding: 20px;
+            }
+            
+            .app-container {
+                border-radius: 32px;
+                overflow: hidden;
+                min-height: calc(100vh - 40px);
+            }
+        }
+
+        /* Badge Icon Style */
+        .badge-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 12px;
+            font-size: 28px;
+            color: white;
+            background: linear-gradient(135deg, var(--primary-blue), var(--primary-green));
+        }
+
+        .badge-name {
+            font-size: 14px;
+            font-weight: 700;
+            color: var(--text-dark);
+            text-align: center;
+        }
+
+        .badge.locked .badge-icon {
+            background: linear-gradient(135deg, #E2E8F0, #CBD5E1);
+            color: #94A3B8;
+        }
+
+        .badge.locked .badge-name {
+            color: #94A3B8;
+        }
+
+        /* Tracking Screen */
+        .tracking-container {
+            min-height: calc(100vh - 150px);
+        }
+
+        .tracking-title {
+            font-size: 26px;
+            font-weight: 800;
+            margin-bottom: 32px;
+            color: var(--text-dark);
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <!-- Welcome Screen -->
+        <div class="screen active" id="screen-welcome">
+            <div class="header">
+                <div class="logo">
+                    <div class="logo-icon">
+                        <i class="fas fa-hands-helping"></i>
+                    </div>
+                    <div class="logo-text">Social Adventures</div>
+                </div>
+            </div>
+            <div class="content">
+                <div class="welcome-container">
+                    <div class="welcome-animation">
+                        <div class="welcome-circle">
+                            <i class="fas fa-smile-beam"></i>
+                        </div>
+                    </div>
+                    <div class="welcome-text">
+                        <h1>Welcome to Social Adventures!</h1>
+                        <p>Practice real-life situations in a safe, fun way. Build confidence one choice at a time.</p>
+                    </div>
+                    <div class="centered-buttons">
+                        <button class="btn btn-full" onclick="changeScreen('screen-menu')">
+                            <i class="fas fa-play-circle"></i>
+                            Start Adventure
+                        </button>
+                        <button class="btn btn-full" onclick="showDemo()" style="background: linear-gradient(135deg, var(--primary-purple), var(--primary-pink));">
+                            <i class="fas fa-eye"></i>
+                            See How It Works
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Menu -->
+        <div class="screen" id="screen-menu">
+            <div class="header">
+                <div class="logo">
+                    <div class="logo-icon">
+                        <i class="fas fa-hands-helping"></i>
+                    </div>
+                    <div class="logo-text">Choose Adventure</div>
+                </div>
+                <div class="user-profile" onclick="openAvatarModal()">
+                    <div class="avatar" style="width: 40px; height: 40px; border-radius: 50%; background: linear-gradient(135deg, var(--primary-blue), var(--primary-green)); display: flex; align-items: center; justify-content: center; color: white; font-size: 18px;">
+                        <i class="fas fa-child"></i>
+                    </div>
+                </div>
+            </div>
+            <div class="content">
+                <div class="menu-header">
+                    <div class="menu-title">Today's Adventures</div>
+                    <div class="menu-subtitle">Choose a situation to practice</div>
+                </div>
+
+                <div class="daily-challenge">
+                    <h3><i class="fas fa-calendar-star"></i> Daily Challenge</h3>
+                    <p>Complete 2 different scenarios to earn a special badge!</p>
+                    <div class="progress-bar" style="height: 8px; background: rgba(255,255,255,0.3); border-radius: 4px; margin-bottom: 16px; overflow: hidden;">
+                        <div style="width: 50%; height: 100%; background: white; border-radius: 4px;"></div>
+                    </div>
+                    <button class="btn btn-small" onclick="startDailyChallenge()" style="background: white; color: var(--primary-blue);">
+                        Continue Challenge
+                    </button>
+                </div>
+
+                <div class="scenarios-grid" id="scenarios-grid">
+                    <!-- Generated by JavaScript -->
+                </div>
+
+                <div class="achievements-section">
+                    <div class="section-title">
+                        <i class="fas fa-trophy"></i>
+                        <span>Your Achievements</span>
+                    </div>
+                    <div class="badges-container" id="badges-container">
+                        <!-- Generated by JavaScript -->
+                    </div>
+                </div>
+            </div>
+
+            <div class="bottom-nav">
+                <div class="nav-btn active" onclick="changeScreen('screen-menu')">
+                    <div class="nav-icon"><i class="fas fa-home"></i></div>
+                    <div class="nav-text">Home</div>
+                </div>
+                <div class="nav-btn" onclick="changeScreen('screen-progress')">
+                    <div class="nav-icon"><i class="fas fa-star"></i></div>
+                    <div class="nav-text">Progress</div>
+                </div>
+                <div class="nav-btn" onclick="changeScreen('screen-customization')">
+                    <div class="nav-icon"><i class="fas fa-cog"></i></div>
+                    <div class="nav-text">Settings</div>
+                </div>
+                <div class="nav-btn" onclick="changeScreen('screen-tracking')">
+                    <div class="nav-icon"><i class="fas fa-chart-line"></i></div>
+                    <div class="nav-text">Tracking</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Scenario Intro -->
+        <div class="screen" id="screen-intro">
+            <div class="header">
+                <div class="logo">
+                    <div class="logo-icon">
+                        <i class="fas fa-hands-helping"></i>
+                    </div>
+                    <div class="logo-text" id="intro-title">Let's Go!</div>
+                </div>
+            </div>
+            <div class="content">
+                <div class="scenario-intro-container">
+                    <div class="scenario-image" id="scenario-image" style="background: linear-gradient(135deg, var(--primary-blue), var(--primary-green));">
+                        <i class="fas fa-birthday-cake"></i>
+                    </div>
+                    <div class="scenario-intro-text" id="scenario-intro-text">Let's go to the birthday party!</div>
+                    <div class="intro-hint">
+                        <i class="fas fa-lightbulb"></i>
+                        <span>Practice party manners and social interactions</span>
+                    </div>
+                    <div class="centered-buttons">
+                        <button class="btn btn-full" onclick="startScenario()">
+                            <i class="fas fa-play"></i>
+                            Start Adventure
+                        </button>
+                        <button class="btn btn-full" onclick="changeScreen('screen-menu')" style="background: linear-gradient(135deg, #64748B, #475569);">
+                            <i class="fas fa-arrow-left"></i>
+                            Back to Menu
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Story Scene -->
+        <div class="screen" id="screen-scene">
+            <div class="header">
+                <div class="logo">
+                    <div class="logo-icon">
+                        <i class="fas fa-hands-helping"></i>
+                    </div>
+                    <div class="logo-text" id="scene-title">Birthday Party</div>
+                </div>
+            </div>
+            <div class="content">
+                <div class="scene-container">
+                    <div class="scene-header">
+                        <div class="progress-dots" id="progress-dots">
+                            <div class="progress-dot active"></div>
+                            <div class="progress-dot"></div>
+                            <div class="progress-dot"></div>
+                            <div class="progress-dot"></div>
+                            <div class="progress-dot"></div>
+                        </div>
+                        <div style="color: var(--text-dark); font-weight: 700; font-size: 16px;">
+                            Step 1 of 5
+                        </div>
+                    </div>
+
+                    <div class="scene-illustration" style="background: linear-gradient(135deg, var(--primary-pink), var(--primary-orange));">
+                        <div class="scene-character">
+                            <i class="fas fa-child"></i>
+                        </div>
+                        <i class="fas fa-birthday-cake" style="font-size: 100px; color: white; opacity: 0.9;"></i>
+                    </div>
+
+                    <div class="choices-container" id="choices-container">
+                        <!-- Generated by JavaScript -->
+                    </div>
+                </div>
+            </div>
+
+            <div class="screen-nav">
+                <button class="nav-action-btn" onclick="changeScreen('screen-intro')">
+                    <i class="fas fa-arrow-left"></i>
+                </button>
+                <button class="nav-action-btn" onclick="skipToFeedback()">
+                    <i class="fas fa-forward"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Feedback Screen -->
+        <div class="screen" id="screen-feedback">
+            <div class="header">
+                <div class="logo">
+                    <div class="logo-icon">
+                        <i class="fas fa-hands-helping"></i>
+                    </div>
+                    <div class="logo-text">Great Choice!</div>
+                </div>
+            </div>
+            <div class="content">
+                <div class="feedback-container">
+                    <div class="feedback-animation">
+                        <i class="fas fa-star"></i>
+                    </div>
+                    <div class="feedback-text">You Did Great!</div>
+                    <div class="feedback-subtext">Bringing a gift shows you care about your friend. Great social thinking!</div>
+                    
+                    <div class="star-reward" style="display: flex; align-items: center; gap: 16px; margin: 30px 0;">
+                        <i class="fas fa-star" style="font-size: 32px; color: var(--primary-yellow); animation: pulse 2s infinite;"></i>
+                        <span style="font-size: 20px; font-weight: 700; color: var(--text-dark);">Star Earned!</span>
+                        <i class="fas fa-star" style="font-size: 32px; color: var(--primary-yellow); animation: pulse 2s infinite;"></i>
+                    </div>
+
+                    <div class="centered-buttons">
+                        <button class="btn btn-full" onclick="nextSceneStep()">
+                            <i class="fas fa-arrow-right"></i>
+                            Continue Adventure
+                        </button>
+                        <button class="btn btn-full" onclick="changeScreen('screen-menu')" style="background: linear-gradient(135deg, #64748B, #475569);">
+                            <i class="fas fa-home"></i>
+                            Back to Menu
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Progress Screen -->
+        <div class="screen" id="screen-progress">
+            <div class="header">
+                <div class="logo">
+                    <div class="logo-icon">
+                        <i class="fas fa-hands-helping"></i>
+                    </div>
+                    <div class="logo-text">Your Progress</div>
+                </div>
+            </div>
+            <div class="content">
+                <div class="progress-container">
+                    <div class="progress-header">
+                        <div class="progress-title">Adventure Progress</div>
+                        <div class="total-stars">
+                            <i class="fas fa-star"></i>
+                            <span id="total-stars">12</span>
+                        </div>
+                    </div>
+
+                    <div class="progress-scenarios" id="progress-list">
+                        <!-- Generated by JavaScript -->
+                    </div>
+                </div>
+            </div>
+
+            <div class="bottom-nav">
+                <div class="nav-btn" onclick="changeScreen('screen-menu')">
+                    <div class="nav-icon"><i class="fas fa-home"></i></div>
+                    <div class="nav-text">Home</div>
+                </div>
+                <div class="nav-btn active">
+                    <div class="nav-icon"><i class="fas fa-star"></i></div>
+                    <div class="nav-text">Progress</div>
+                </div>
+                <div class="nav-btn" onclick="changeScreen('screen-customization')">
+                    <div class="nav-icon"><i class="fas fa-cog"></i></div>
+                    <div class="nav-text">Settings</div>
+                </div>
+                <div class="nav-btn" onclick="changeScreen('screen-tracking')">
+                    <div class="nav-icon"><i class="fas fa-chart-line"></i></div>
+                    <div class="nav-text">Tracking</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Rewards Screen -->
+        <div class="screen" id="screen-rewards">
+            <div class="header">
+                <div class="logo">
+                    <div class="logo-icon">
+                        <i class="fas fa-hands-helping"></i>
+                    </div>
+                    <div class="logo-text">Reward Unlocked!</div>
+                </div>
+            </div>
+            <div class="content">
+                <div class="rewards-container">
+                    <div class="reward-unlocked">
+                        <i class="fas fa-medal"></i>
+                    </div>
+                    <div class="rewards-text">New Adventure Unlocked!</div>
+                    <div class="feedback-subtext">You can now play the "Family Visit" adventure</div>
+                    
+                    <div class="centered-buttons">
+                        <button class="btn btn-full" onclick="changeScreen('screen-menu')">
+                            <i class="fas fa-play-circle"></i>
+                            Try New Adventure
+                        </button>
+                        <button class="btn btn-full" onclick="changeScreen('screen-progress')" style="background: linear-gradient(135deg, var(--primary-purple), var(--primary-pink));">
+                            <i class="fas fa-chart-line"></i>
+                            View Progress
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Customization Screen -->
+        <div class="screen" id="screen-customization">
+            <div class="header">
+                <div class="logo">
+                    <div class="logo-icon">
+                        <i class="fas fa-hands-helping"></i>
+                    </div>
+                    <div class="logo-text">Settings</div>
+                </div>
+            </div>
+            <div class="content">
+                <div class="customization-container">
+                    <div class="customization-title">Settings</div>
+                    <div class="customization-options">
+                        <div class="customization-option">
+                            <h3>Sound</h3>
+                            <p>Toggle sound effects</p>
+                        </div>
+                        <div class="customization-option">
+                            <h3>Notifications</h3>
+                            <p>Enable daily reminders</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bottom-nav">
+                <div class="nav-btn" onclick="changeScreen('screen-menu')">
+                    <div class="nav-icon"><i class="fas fa-home"></i></div>
+                    <div class="nav-text">Home</div>
+                </div>
+                <div class="nav-btn" onclick="changeScreen('screen-progress')">
+                    <div class="nav-icon"><i class="fas fa-star"></i></div>
+                    <div class="nav-text">Progress</div>
+                </div>
+                <div class="nav-btn active">
+                    <div class="nav-icon"><i class="fas fa-cog"></i></div>
+                    <div class="nav-text">Settings</div>
+                </div>
+                <div class="nav-btn" onclick="changeScreen('screen-tracking')">
+                    <div class="nav-icon"><i class="fas fa-chart-line"></i></div>
+                    <div class="nav-text">Tracking</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tracking Screen -->
+        <div class="screen" id="screen-tracking">
+            <div class="header">
+                <div class="logo">
+                    <div class="logo-icon">
+                        <i class="fas fa-hands-helping"></i>
+                    </div>
+                    <div class="logo-text">Progress Tracking</div>
+                </div>
+            </div>
+            <div class="content">
+                <div class="tracking-container">
+                    <div class="tracking-title">Your Progress Over Time</div>
+                    <div class="customization-option">
+                        <h3>Weekly Progress</h3>
+                        <p>Complete more adventures to see your progress chart!</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bottom-nav">
+                <div class="nav-btn" onclick="changeScreen('screen-menu')">
+                    <div class="nav-icon"><i class="fas fa-home"></i></div>
+                    <div class="nav-text">Home</div>
+                </div>
+                <div class="nav-btn" onclick="changeScreen('screen-progress')">
+                    <div class="nav-icon"><i class="fas fa-star"></i></div>
+                    <div class="nav-text">Progress</div>
+                </div>
+                <div class="nav-btn" onclick="changeScreen('screen-customization')">
+                    <div class="nav-icon"><i class="fas fa-cog"></i></div>
+                    <div class="nav-text">Settings</div>
+                </div>
+                <div class="nav-btn active">
+                    <div class="nav-icon"><i class="fas fa-chart-line"></i></div>
+                    <div class="nav-text">Tracking</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Avatar Modal -->
+    <div class="avatar-modal" id="avatar-modal" style="display: none;">
+        <div class="avatar-modal-content">
+            <h2 style="font-size: 26px; margin-bottom: 10px; color: var(--text-dark);">Choose Your Avatar</h2>
+            <p style="color: var(--text-light); margin-bottom: 25px;">Select a character to represent you in adventures!</p>
+            
+            <div class="avatar-options" id="avatar-options" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin: 30px 0;">
+                <!-- Generated by JavaScript -->
+            </div>
+            
+            <div class="button-group" style="margin-top: 30px;">
+                <button class="btn btn-small" onclick="saveAvatar()" style="flex: 1;">
+                    Save
+                </button>
+                <button class="btn btn-small" onclick="closeAvatarModal()" style="flex: 1; background: linear-gradient(135deg, #64748B, #475569);">
+                    Cancel
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // App Data
+        const scenarios = [
+            { 
+                id: 1, 
+                name: "Birthday Party", 
+                icon: "fa-birthday-cake", 
+                color: "#FF8FA3", 
+                stars: 3, 
+                progress: 80, 
+                comfort: 4,
+                dailyChallenge: true,
+                description: "Practice party manners and social interactions"
+            },
+            { 
+                id: 2, 
+                name: "Supermarket", 
+                icon: "fa-shopping-cart", 
+                color: "#7DCC9A", 
+                stars: 2, 
+                progress: 60, 
+                comfort: 3,
+                dailyChallenge: true,
+                description: "Learn shopping routines and interactions"
+            },
+            { 
+                id: 3, 
+                name: "Doctor", 
+                icon: "fa-user-md", 
+                color: "#5CA8E8", 
+                stars: 1, 
+                progress: 40, 
+                comfort: 2,
+                description: "Prepare for medical visits and check-ups"
+            },
+            { 
+                id: 4, 
+                name: "Restaurant", 
+                icon: "fa-utensils", 
+                color: "#FF9A5C", 
+                stars: 3, 
+                progress: 100, 
+                comfort: 5,
+                description: "Practice dining out and ordering food"
+            },
+            { 
+                id: 5, 
+                name: "School", 
+                icon: "fa-graduation-cap", 
+                color: "#B298DC", 
+                stars: 2, 
+                progress: 50, 
+                comfort: 3,
+                description: "Navigate classroom situations and friendships"
+            },
+            { 
+                id: 6, 
+                name: "Movies", 
+                icon: "fa-film", 
+                color: "#FF6B8B", 
+                stars: 1, 
+                progress: 30, 
+                comfort: 1,
+                description: "Learn theater etiquette and social cues"
+            },
+            { 
+                id: 7, 
+                name: "Park", 
+                icon: "fa-tree", 
+                color: "#4ECDC4", 
+                stars: 0, 
+                progress: 0, 
+                comfort: 0,
+                description: "Practice playground interactions and sharing"
+            },
+            { 
+                id: 8, 
+                name: "Family Visit", 
+                icon: "fa-home", 
+                color: "#FFD166", 
+                stars: 0, 
+                progress: 0, 
+                comfort: 0, 
+                locked: true,
+                description: "Learn family gathering dynamics and greetings"
+            }
+        ];
+
+        const achievements = [
+            { id: 1, name: "First Step", icon: "fa-footsteps", color: "#5CA8E8", earned: true },
+            { id: 2, name: "Star Collector", icon: "fa-star", color: "#FFD166", earned: true },
+            { id: 3, name: "Social Butterfly", icon: "fa-butterfly", color: "#FF8FA3", earned: false },
+            { id: 4, name: "Challenge Master", icon: "fa-trophy", color: "#FF9A5C", earned: false },
+            { id: 5, name: "Brave Heart", icon: "fa-heart", color: "#FF6B8B", earned: true }
+        ];
+
+        const avatarOptions = [
+            { icon: "fas fa-child", color: "#5CA8E8", name: "Alex" },
+            { icon: "fas fa-user-astronaut", color: "#B298DC", name: "Cosmo" },
+            { icon: "fas fa-robot", color: "#4ECDC4", name: "Robo" },
+            { icon: "fas fa-cat", color: "#FF8FA3", name: "Whiskers" },
+            { icon: "fas fa-dragon", color: "#FF6B8B", name: "Sparky" },
+            { icon: "fas fa-fish", color: "#5CA8E8", name: "Bubbles" }
+        ];
+
+        let currentScenario = scenarios[0];
+        let currentSceneStep = 0;
+        let userAvatar = avatarOptions[0];
+        let dailyChallengeProgress = 1;
+
+        // Initialize App
+        document.addEventListener('DOMContentLoaded', function() {
+            generateScenarioCards();
+            generateAchievementBadges();
+            generateAvatarOptions();
+            generateProgressList();
+            updateTotalStars();
+            
+            // Set up scene choices for demonstration
+            setupSceneChoices();
+        });
+
+        // Generate Scenario Cards
+        function generateScenarioCards() {
+            const grid = document.getElementById('scenarios-grid');
+            if (!grid) return;
+            
+            grid.innerHTML = '';
+            
+            scenarios.forEach(scenario => {
+                const card = document.createElement('div');
+                card.className = 'scenario-card';
+                if (scenario.locked) {
+                    card.style.opacity = '0.6';
+                    card.style.filter = 'grayscale(0.3)';
+                }
+                
+                const dailyBadge = scenario.dailyChallenge ? 
+                    `<div style="position: absolute; top: 12px; right: 12px; background: var(--primary-yellow); color: var(--text-dark); font-size: 11px; font-weight: 800; padding: 4px 10px; border-radius: 20px;">DAILY</div>` : '';
+                
+                card.innerHTML = `
+                    ${dailyBadge}
+                    <div class="scenario-icon" style="background: linear-gradient(135deg, ${scenario.color}, ${lightenColor(scenario.color, 20)});">
+                        <i class="fas ${scenario.icon}"></i>
+                    </div>
+                    <div class="scenario-name">${scenario.name}</div>
+                    <div class="scenario-stats">
+                        <i class="fas fa-star" style="color: var(--primary-yellow);"></i>
+                        <span>${scenario.stars}/3</span>
+                        <span style="margin: 0 4px;">•</span>
+                        <i class="fas fa-heart" style="color: #FF6B8B;"></i>
+                        <span>${scenario.comfort}/5</span>
+                    </div>
+                    ${scenario.locked ? 
+                        `<div style="margin-top: 8px; font-size: 12px; color: var(--text-light);">
+                            <i class="fas fa-lock"></i> Complete more adventures
+                        </div>` : 
+                        ''
+                    }
+                `;
+                
+                card.onclick = () => {
+                    if (!scenario.locked) {
+                        openScenario(scenario);
+                    } else {
+                        showNotification("Complete more adventures to unlock this one!");
+                    }
+                };
+                
+                grid.appendChild(card);
+            });
+        }
+
+        // Generate Achievement Badges
+        function generateAchievementBadges() {
+            const container = document.getElementById('badges-container');
+            if (!container) return;
+            
+            container.innerHTML = '';
+            
+            achievements.forEach(achievement => {
+                const badge = document.createElement('div');
+                badge.className = `badge ${achievement.earned ? '' : 'locked'}`;
+                
+                badge.innerHTML = `
+                    <div class="badge-icon" style="background: linear-gradient(135deg, ${achievement.color}, ${lightenColor(achievement.color, 20)});">
+                        <i class="fas ${achievement.icon}"></i>
+                    </div>
+                    <div class="badge-name">${achievement.name}</div>
+                `;
+                
+                badge.onclick = () => {
+                    if (achievement.earned) {
+                        showNotification(`🎉 You earned the "${achievement.name}" badge!`);
+                    } else {
+                        showNotification(`Keep playing to unlock the "${achievement.name}" badge!`);
+                    }
+                };
+                
+                container.appendChild(badge);
+            });
+        }
+
+        // Generate Avatar Options
+        function generateAvatarOptions() {
+            const container = document.getElementById('avatar-options');
+            if (!container) return;
+            
+            container.innerHTML = '';
+            
+            avatarOptions.forEach((avatar, index) => {
+                const option = document.createElement('div');
+                option.className = 'avatar-option';
+                option.style.cssText = `
+                    background: linear-gradient(135deg, ${avatar.color}, ${lightenColor(avatar.color, 30)});
+                    width: 80px;
+                    height: 80px;
+                    border-radius: 20px;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    cursor: pointer;
+                    transition: var(--transition);
+                    border: 3px solid transparent;
+                `;
+                
+                option.innerHTML = `<i class="${avatar.icon}" style="font-size: 36px; color: white;"></i>`;
+                
+                option.onclick = () => {
+                    // Remove selection from all
+                    document.querySelectorAll('.avatar-option').forEach(opt => {
+                        opt.style.borderColor = 'transparent';
+                        opt.style.transform = 'scale(1)';
+                    });
+                    
+                    // Add selection to clicked
+                    option.style.borderColor = 'var(--primary-blue)';
+                    option.style.transform = 'scale(1.05)';
+                    userAvatar = avatar;
+                };
+                
+                container.appendChild(option);
+            });
+        }
+
+        // Generate Progress List
+        function generateProgressList() {
+            const container = document.getElementById('progress-list');
+            if (!container) return;
+            
+            container.innerHTML = '';
+            
+            scenarios.forEach(scenario => {
+                if (scenario.locked) return;
+                
+                const item = document.createElement('div');
+                item.className = 'progress-item';
+                
+                item.innerHTML = `
+                    <div class="scenario-icon" style="width: 50px; height: 50px; margin-right: 16px; background: linear-gradient(135deg, ${scenario.color}, ${lightenColor(scenario.color, 20)});">
+                        <i class="fas ${scenario.icon}"></i>
+                    </div>
+                    <div style="flex: 1;">
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+                            <div style="font-weight: 700; color: var(--text-dark);">${scenario.name}</div>
+                            <div style="color: var(--text-light); font-size: 14px;">${scenario.progress}%</div>
+                        </div>
+                        <div style="height: 10px; background: #E2E8F0; border-radius: 5px; overflow: hidden; margin-bottom: 8px;">
+                            <div style="width: ${scenario.progress}%; height: 100%; background: linear-gradient(90deg, ${scenario.color}, ${lightenColor(scenario.color, 30)}); border-radius: 5px;"></div>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; font-size: 14px; color: var(--text-light);">
+                            <div>Comfort: ${scenario.comfort}/5</div>
+                            <div>Stars: ${scenario.stars}/3</div>
+                        </div>
+                    </div>
+                `;
+                
+                container.appendChild(item);
+            });
+        }
+
+        // Open Scenario
+        function openScenario(scenario) {
+            currentScenario = scenario;
+            
+            // Update intro screen
+            const title = document.getElementById('intro-title');
+            const text = document.getElementById('scenario-intro-text');
+            const image = document.getElementById('scenario-image');
+            
+            if (title) title.textContent = scenario.name;
+            if (text) text.textContent = `Let's go to the ${scenario.name.toLowerCase()}!`;
+            if (image) {
+                image.style.background = `linear-gradient(135deg, ${scenario.color}, ${lightenColor(scenario.color, 20)})`;
+                image.innerHTML = `<i class="fas ${scenario.icon}"></i>`;
+            }
+            
+            changeScreen('screen-intro');
+        }
+
+        // Start Scenario
+        function startScenario() {
+            // Update scene title
+            const title = document.getElementById('scene-title');
+            if (title) title.textContent = currentScenario.name;
+            
+            // Update progress dots
+            currentSceneStep = 0;
+            updateProgressDots();
+            
+            // Setup choices
+            setupSceneChoices();
+            
+            changeScreen('screen-scene');
+        }
+
+        // Setup Scene Choices
+        function setupSceneChoices() {
+            const container = document.getElementById('choices-container');
+            if (!container) return;
+            
+            const choices = getChoicesForScenario(currentScenario.name);
+            
+            container.innerHTML = choices.map(choice => `
+                <div class="choice-btn" onclick="makeChoice('${choice.text}', '${choice.feedback}')">
+                    <div class="choice-icon" style="background: linear-gradient(135deg, ${choice.color}, ${lightenColor(choice.color, 20)});">
+                        <i class="fas ${choice.icon}"></i>
+                    </div>
+                    <div class="choice-text">${choice.text}</div>
+                </div>
+            `).join('');
+        }
+
+        // Get Choices for Scenario
+        function getChoicesForScenario(scenarioName) {
+            const choices = {
+                "Birthday Party": [
+                    { text: "Bring a gift", icon: "fa-gift", color: "#FF8FA3", feedback: "Great! Bringing a gift shows you care about your friend." },
+                    { text: "Say happy birthday", icon: "fa-comment-dots", color: "#5CA8E8", feedback: "Excellent! Saying happy birthday makes people feel special." },
+                    { text: "Play a game", icon: "fa-gamepad", color: "#7DCC9A", feedback: "Wonderful! Playing games together is a great way to have fun." },
+                    { text: "Eat cake", icon: "fa-birthday-cake", color: "#FF9A5C", feedback: "Yummy! Enjoying treats together is part of the celebration." }
+                ],
+                "Supermarket": [
+                    { text: "Get a cart", icon: "fa-shopping-cart", color: "#7DCC9A", feedback: "Good start! Getting a cart helps you carry your items." },
+                    { text: "Find apples", icon: "fa-apple-alt", color: "#FF6B8B", feedback: "Great! Finding what you need is an important shopping skill." },
+                    { text: "Pay at checkout", icon: "fa-cash-register", color: "#FF9A5C", feedback: "Excellent! Paying completes your shopping trip." },
+                    { text: "Pack groceries", icon: "fa-box", color: "#B298DC", feedback: "Well done! Packing groceries carefully keeps them safe." }
+                ]
+            };
+            
+            return choices[scenarioName] || choices["Birthday Party"];
+        }
+
+        // Make Choice
+        function makeChoice(choiceText, feedback) {
+            // Update progress
+            currentSceneStep++;
+            updateProgressDots();
+            
+            // Update scenario progress
+            const scenario = scenarios.find(s => s.name === currentScenario.name);
+            if (scenario && scenario.stars < 3) {
+                scenario.stars = Math.min(scenario.stars + 0.5, 3);
+                scenario.progress = Math.min(scenario.progress + 25, 100);
+                scenario.comfort = Math.min(scenario.comfort + 0.5, 5);
+                
+                // Update displays
+                generateScenarioCards();
+                generateProgressList();
+                updateTotalStars();
+            }
+            
+            // Show feedback screen
+            const feedbackText = document.querySelector('.feedback-subtext');
+            if (feedbackText) feedbackText.textContent = feedback;
+            
+            changeScreen('screen-feedback');
+        }
+
+        // Update Progress Dots
+        function updateProgressDots() {
+            const dots = document.querySelectorAll('.progress-dot');
+            dots.forEach((dot, index) => {
+                dot.classList.toggle('active', index <= currentSceneStep);
+            });
+            
+            // Update step text
+            const stepText = document.querySelector('.scene-header div:last-child');
+            if (stepText) {
+                stepText.textContent = `Step ${currentSceneStep + 1} of 5`;
+            }
+        }
+
+        // Next Scene Step
+        function nextSceneStep() {
+            if (currentSceneStep < 4) {
+                // Continue to next scene
+                startScenario();
+            } else {
+                // Scenario complete
+                if (currentScenario.id === 7 && !scenarios[7].locked) {
+                    // Unlock new scenario
+                    scenarios[7].locked = false;
+                    generateScenarioCards();
+                    changeScreen('screen-rewards');
+                } else {
+                    changeScreen('screen-menu');
+                }
+            }
+        }
+
+        // Skip to Feedback (for demo)
+        function skipToFeedback() {
+            currentSceneStep = Math.min(currentSceneStep + 1, 4);
+            updateProgressDots();
+            changeScreen('screen-feedback');
+        }
+
+        // Start Daily Challenge
+        function startDailyChallenge() {
+            showNotification("Daily challenge started! Complete 2 different scenarios.");
+            // Open first available scenario
+            const availableScenario = scenarios.find(s => s.dailyChallenge && !s.locked);
+            if (availableScenario) {
+                openScenario(availableScenario);
+            }
+        }
+
+        // Open Avatar Modal
+        function openAvatarModal() {
+            document.getElementById('avatar-modal').style.display = 'flex';
+        }
+
+        // Close Avatar Modal
+        function closeAvatarModal() {
+            document.getElementById('avatar-modal').style.display = 'none';
+        }
+
+        // Save Avatar
+        function saveAvatar() {
+            showNotification(`Avatar updated to ${userAvatar.name}!`);
+            closeAvatarModal();
+        }
+
+        // Update Total Stars
+        function updateTotalStars() {
+            const total = scenarios.reduce((sum, s) => sum + s.stars, 0);
+            const element = document.getElementById('total-stars');
+            if (element) element.textContent = Math.floor(total);
+        }
+
+        // Change Screen
+        function changeScreen(screenId) {
+            // Hide all screens
+            document.querySelectorAll('.screen').forEach(screen => {
+                screen.classList.remove('active');
+            });
+            
+            // Show target screen
+            const targetScreen = document.getElementById(screenId);
+            if (targetScreen) {
+                targetScreen.classList.add('active');
+            }
+            
+            // Update navigation
+            document.querySelectorAll('.nav-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            
+            // Set active nav based on screen
+            const navIndex = {
+                'screen-menu': 0,
+                'screen-progress': 1,
+                'screen-customization': 2,
+                'screen-tracking': 3
+            }[screenId];
+            
+            if (navIndex !== undefined) {
+                const navButtons = document.querySelectorAll('.nav-btn');
+                if (navButtons[navIndex]) {
+                    navButtons[navIndex].classList.add('active');
+                }
+            }
+        }
+
+        // Show Notification
+        function showNotification(message) {
+            // Remove existing notifications
+            const existingNotifications = document.querySelectorAll('.notification');
+            existingNotifications.forEach(n => n.remove());
+            
+            const notification = document.createElement('div');
+            notification.className = 'notification';
+            notification.textContent = message;
+            
+            document.body.appendChild(notification);
+            
+            // Animate in
+            setTimeout(() => {
+                notification.style.opacity = '1';
+                notification.style.transform = 'translateX(-50%) translateY(0)';
+            }, 10);
+            
+            // Remove after delay
+            setTimeout(() => {
+                notification.style.opacity = '0';
+                notification.style.transform = 'translateX(-50%) translateY(-20px)';
+                setTimeout(() => {
+                    if (notification.parentNode) {
+                        notification.parentNode.removeChild(notification);
+                    }
+                }, 300);
+            }, 3000);
+        }
+
+        // Show Demo
+        function showDemo() {
+            showNotification("👋 Welcome! Try clicking on 'Birthday Party' to start your first adventure!");
+            changeScreen('screen-menu');
+        }
+
+        // Utility: Lighten Color
+        function lightenColor(color, percent) {
+            // Remove # if present
+            const hex = color.replace('#', '');
+            
+            // Convert to RGB
+            const num = parseInt(hex, 16);
+            const amt = Math.round(2.55 * percent);
+            
+            let R = (num >> 16) + amt;
+            let G = (num >> 8 & 0x00FF) + amt;
+            let B = (num & 0x0000FF) + amt;
+            
+            // Clamp values to 0-255
+            R = R > 255 ? 255 : R < 0 ? 0 : R;
+            G = G > 255 ? 255 : G < 0 ? 0 : G;
+            B = B > 255 ? 255 : B < 0 ? 0 : B;
+            
+            // Convert back to hex
+            const result = (0x1000000 + (R * 0x10000) + (G * 0x100) + B)
+                .toString(16)
+                .slice(1);
+                
+            return '#' + result.toUpperCase();
+        }
+    </script>
+</body>
+</html>
